@@ -19,7 +19,7 @@ export default function Diferenciais() {
               <tr>
                 <th className="py-3 px-4 text-left">Recurso</th>
                 <th className="py-3 px-4 text-center">Contrata+</th>
-                <th className="py-3 px-4 text-center">GetNinjas</th>
+                <th className="py-3 px-4 text-center">Concorrentes</th>
               </tr>
             </thead>
             <tbody>
@@ -50,7 +50,7 @@ export default function Diferenciais() {
         </div>
         <p className="text-center mt-8 text-lg">
           O Contrata+ vai além da simples conexão entre clientes e profissionais. Oferecemos uma experiência completa, 
-          segura e eficiente, superando as limitações das plataformas tradicionais como o GetNinjas.
+          segura e eficiente, superando as limitações das plataformas tradicionais como o concorrente.
         </p>
       </div>
     </section>
