@@ -13,14 +13,14 @@ export default function Comparison() {
   return (
     <section className="py-20 bg-gray-50">
       <div className="max-w-4xl mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-12 text-center">Contrata+ vs. GetNinjas</h2>
+        <h2 className="text-3xl font-bold mb-12 text-center">Contrata+ vs. Concorrentes</h2>
         <div className="overflow-x-auto">
           <table className="w-full bg-white shadow-sm rounded-lg overflow-hidden">
             <thead className="bg-blue-500 text-white">
               <tr>
                 <th className="py-3 px-6 text-left">Features</th>
                 <th className="py-3 px-6 text-center">Contrata+</th>
-                <th className="py-3 px-6 text-center">GetNinjas</th>
+                <th className="py-3 px-6 text-center">Concorrentes</th>
               </tr>
             </thead>
             <tbody>
