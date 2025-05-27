@@ -3,9 +3,11 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { adicionarDados } from '@/services/api'; // Importando a função
+import emailjs from "@emailjs/browser";
+import { useToast } from '@/hooks/use-toast';
 
 export default function Feedback() {
+  const { toast } = useToast();
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [feedback, setFeedback] = useState('');
@@ -14,29 +16,39 @@ export default function Feedback() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const dados = { nome, email, feedback };
-
     setLoading(true);
 
     try {
-      const response = await adicionarDados(dados);
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          from_name: nome,
+          from_email: email,
+          message: feedback,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
 
-      if (response && response.id) {
-        setMensagem('Feedback enviado com sucesso!');
-      } else {
-        setMensagem('Erro ao enviar feedback. Tente novamente.');
-      }
+      toast({
+        title: "Feedback enviado!",
+        description: "Obrigado por compartilhar sua opinião conosco.",
+        variant: "default",
+      });
+
+      setNome('');
+      setEmail('');
+      setFeedback('');
     } catch (error) {
-      setMensagem('Erro ao enviar feedback. Tente novamente.'+ error);
+      console.error('Erro:', error);
+      toast({
+        title: "Erro ao enviar feedback",
+        description: "Ocorreu um erro ao enviar seu feedback. Por favor, tente novamente.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
-
-    // Limpa os campos após o envio
-    setNome('');
-    setEmail('');
-    setFeedback('');
   };
 
   return (
