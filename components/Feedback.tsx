@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { adicionarDados } from '@/services/api';
 import emailjs from "@emailjs/browser";
 import { useToast } from '@/hooks/use-toast';
 
@@ -11,14 +12,24 @@ export default function Feedback() {
   const [nome, setNome] = useState('');
   const [email, setEmail] = useState('');
   const [feedback, setFeedback] = useState('');
-  const [mensagem, setMensagem] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
 
+    const dados = { nome, email, feedback };
+    let apiSuccess = false;
+    let emailJsSuccess = false;
+
     try {
+      // Tenta enviar para a API própria
+      const response = await adicionarDados(dados);
+      if (response && response.id) {
+        apiSuccess = true;
+      }
+
+      // Tenta enviar para o EmailJS
       await emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
@@ -29,16 +40,22 @@ export default function Feedback() {
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
       );
+      emailJsSuccess = true;
 
-      toast({
-        title: "Feedback enviado!",
-        description: "Obrigado por compartilhar sua opinião conosco.",
-        variant: "default",
-      });
-
-      setNome('');
-      setEmail('');
-      setFeedback('');
+      // Se pelo menos um dos serviços funcionou, considera sucesso
+      if (apiSuccess || emailJsSuccess) {
+        toast({
+          title: "Feedback enviado!",
+          description: "Obrigado por compartilhar sua opinião conosco.",
+          variant: "default",
+        });
+        
+        setNome('');
+        setEmail('');
+        setFeedback('');
+      } else {
+        throw new Error("Ambos os serviços falharam");
+      }
     } catch (error) {
       console.error('Erro:', error);
       toast({
@@ -92,12 +109,6 @@ export default function Feedback() {
             </Button>
           </div>
         </form>
-
-        {mensagem && (
-          <p className="mt-4 text-center text-lg font-semibold">
-            {mensagem}
-          </p>
-        )}
       </div>
     </section>
   );
